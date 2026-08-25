@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Test · Neurotransmisores</title>
+<style>
+  :root{
+    --pink: #ec407a;
+    --pink-dark: #ad1457;
+    --pink-darker: #7a2e49;
+    --pink-soft: #fff0f6;
+    --pink-border: #f3c1d6;
+    --green: #34d399;
+    --rose: #f87171;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin:0; padding:0; min-height: 100%;
+    background: linear-gradient(160deg,#fff5f8 0%, #ffeef4 50%, #ffe4ee 100%);
+    font-family: -apple-system, "Poppins", "Segoe UI", Roboto, sans-serif;
+    color:#5a3d4d;
+  }
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 22px 16px 40px 16px;
+    display:flex; flex-direction:column;
+  }
+  .center { flex:1; display:flex; align-items:center; justify-content:center; }
+  .hide { display:none !important; }
+
+  /* ---- INTRO ---- */
+  #intro { text-align:center; }
+  .circle-emoji {
+    width: 96px; height:96px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:44px;
+    margin: 0 auto 16px auto; box-shadow: 0 10px 25px rgba(219,39,119,0.20);
+  }
+  h1.title {
+    font-family: Georgia, 'Times New Roman', serif; font-style:italic;
+    color:var(--pink-dark); font-size: 30px; margin: 0 0 4px 0;
+  }
+  .subtitle {
+    text-transform:uppercase; letter-spacing:2.5px; font-size:11px; font-weight:700;
+    color:var(--pink-darker); margin-bottom:20px;
+  }
+  .ribbon {
+    background: rgba(255,255,255,0.7); border:2px dashed #f48fb1; border-radius:16px;
+    padding:14px 16px; font-size:13px; color:var(--pink-darker); margin-bottom:26px;
+  }
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background: var(--pink); color:#fff; font-weight:600; font-size:15px;
+    padding: 13px 30px; border-radius:999px; border:none; cursor:pointer;
+    box-shadow: 0 6px 16px rgba(236,64,122,0.35);
+    transition: background .15s ease, transform .1s ease;
+    width: 100%;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { background:#f6c6da; box-shadow:none; cursor:not-allowed; }
+  .btn.ghost {
+    background:#fff; color: var(--pink-dark); border: 2px solid var(--pink);
+    box-shadow:none;
+  }
+  .flowers { margin-top: 30px; color:#f6b8d2; letter-spacing:10px; font-size:14px; }
+
+  /* ---- QUIZ ---- */
+  .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .progress-bar { flex:1; height:9px; background:#fbd7e6; border-radius:99px; overflow:hidden; }
+  .progress-fill { height:100%; background: var(--pink); border-radius:99px; transition: width .3s ease; }
+  .progress-label { font-size:12px; font-weight:700; color: var(--pink-dark); white-space:nowrap; }
+
+  .card {
+    background:#fff; border-radius:22px; padding:20px 18px;
+    box-shadow: 0 10px 25px rgba(236,64,122,0.15); border: 1px solid #fbe1ea;
+  }
+  .level-tag {
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800;
+    padding:5px 12px; border-radius:99px; margin-bottom:14px;
+  }
+  .lvl-facil { color:#3f9d67; background:#e6f8ee; }
+  .lvl-media { color:#b9791f; background:#fff3e0; }
+  .lvl-dificil { color:var(--pink-dark); background:var(--pink-soft); }
+
+  .q-text { font-size:16px; font-weight:600; line-height:1.5; margin: 0 0 16px 0; color:#4a3140; }
+
+  .option {
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    background:#fff; border:2px solid var(--pink-border); border-radius:14px;
+    padding:12px 13px; margin-bottom:10px; font-size:14px; color:#4a3140;
+    cursor:pointer; transition: border-color .15s, background .15s;
+  }
+  .option:active { transform: scale(0.99); }
+  .option.selected { border-color: var(--pink); background:#fff0f6; }
+  .option.correct { border-color: var(--green); background:#ecfdf5; }
+  .option.wrong { border-color: var(--rose); background:#fef2f2; }
+  .option.dim { opacity:.55; }
+  .opt-letter {
+    flex:0 0 24px; width:24px; height:24px; border-radius:50%;
+    border:2px solid var(--pink-border); display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800; color:var(--pink-dark);
+  }
+  .option.correct .opt-letter { border-color: var(--green); color:#059669; }
+  .option.selected .opt-letter { border-color: var(--pink); }
+  .opt-icon { margin-left:auto; font-size:15px; flex:0 0 auto; }
+
+  .explain {
+    margin-top:6px; font-size:12.5px; background: var(--pink-soft);
+    border-left:4px solid #f48fb1; border-radius:10px; padding:10px 12px; color:var(--pink-darker);
+  }
+
+  .btn-row { margin-top:18px; }
+
+  /* ---- RESULTS ---- */
+  #results .card { text-align:center; }
+  .result-emoji { font-size:44px; margin-bottom:4px; }
+  .result-msg { font-size:13px; color:var(--pink-darker); margin-bottom:18px; }
+
+  .ring-wrap { position:relative; width:150px; height:150px; margin: 0 auto 20px auto; }
+  .ring-wrap svg { transform: rotate(-90deg); width:100%; height:100%; }
+  .ring-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-score { font-size:26px; font-weight:800; color:var(--pink-dark); }
+  .ring-pct { font-size:12px; color:#c2185b; }
+
+  .level-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom:20px; }
+  .level-box { border-radius:14px; padding:10px 6px; }
+  .level-box .lname { font-size:10.5px; font-weight:700; margin-bottom:2px; }
+  .level-box .lscore { font-size:16px; font-weight:800; color:#5a3d4d; }
+
+  .review {
+    text-align:left; background:rgba(255,255,255,0.75); border:1px solid #fbe1ea;
+    border-radius:18px; padding:14px; margin-top:18px; max-height: 300px; overflow-y:auto;
+  }
+  .review h3 { font-size:13px; color:var(--pink-dark); margin: 0 0 10px 0; }
+  .review-item { display:flex; gap:8px; font-size:12px; margin-bottom:8px; line-height:1.4; }
+  .review-item .ic { flex:0 0 auto; margin-top:1px; }
+  .review-item.ok .ic { color: var(--green); }
+  .review-item.bad .ic { color: var(--rose); }
+  .review-item .ans-correct { color: var(--rose); }
+
+  footer.tag { text-align:center; margin-top:24px; color:var(--pink-dark); font-size:10px; letter-spacing:2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div id="intro" class="center">
+    <div>
+      <div class="circle-emoji">🌸</div>
+      <h1 class="title">Test de Repaso</h1>
+      <div class="subtitle">Neurotransmisores y Núcleos Basales</div>
+      <div class="ribbon">✨ 15 preguntas · Fácil, Media y Difícil ✨</div>
+      <button class="btn" onclick="startQuiz()">Empezar →</button>
+      <div class="flowers">✿ ⋆｡‧˚ ✿ ⋆｡‧˚ ✿</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hide">
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">1 / 15</div>
+    </div>
+    <div class="card">
+      <div id="levelTag" class="level-tag"></div>
+      <p class="q-text" id="qText"></p>
+      <div id="options"></div>
+      <div id="explainBox"></div>
+      <div class="btn-row">
+        <button class="btn" id="mainBtn" disabled onclick="handleMainBtn()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="hide">
+    <div class="card">
+      <div class="result-emoji">🎀</div>
+      <h1 class="title" style="font-size:26px;">¡Resultados!</h1>
+      <div class="result-msg" id="resultMsg"></div>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#fce4ec" stroke-width="12"/>
+          <circle id="ringProgress" cx="60" cy="60" r="52" fill="none" stroke="#ec407a" stroke-width="12" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-text">
+          <div class="ring-score" id="ringScore">0/15</div>
+          <div class="ring-pct" id="ringPct">0%</div>
+        </div>
+      </div>
+      <div class="level-grid" id="levelGrid"></div>
+      <button class="btn ghost" onclick="restartQuiz()">↺ Volver a intentar</button>
+    </div>
+    <div class="review">
+      <h3>🌷 Repaso de respuestas</h3>
+      <div id="reviewList"></div>
+    </div>
+    <footer class="tag">HECHO CON CARIÑO PARA ESTUDIAR 💕</footer>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  { level:"facil", q:"¿Qué neurotransmisor es el principal inhibitorio del sistema nervioso central?",
+    options:["Glutamato","GABA","Dopamina","Adrenalina"], correct:1,
+    explain:"El GABA actúa como un freno para los neurotransmisores excitatorios." },
+  { level:"facil", q:"¿Qué neurotransmisor está asociado a la Enfermedad de Parkinson por su deficiencia?",
+    options:["Serotonina","Histamina","Dopamina","GABA"], correct:2,
+    explain:"La destrucción de la sustancia negra provoca pérdida de dopamina, causando el Parkinson." },
+  { level:"facil", q:"¿En qué glándula se produce principalmente la adrenalina (epinefrina)?",
+    options:["Glándula pituitaria","Glándula suprarrenal (médula)","Tiroides","Hipotálamo"], correct:1,
+    explain:"Las células cromafines de la médula suprarrenal secretan adrenalina." },
+  { level:"facil", q:"¿Qué neurotransmisor está relacionado con la Enfermedad de Alzheimer por su carencia?",
+    options:["Glutamato","Acetilcolina","Adrenalina","Histamina"], correct:1,
+    explain:"El Alzheimer se asocia a una carencia de acetilcolina en ciertas regiones del cerebro." },
+  { level:"facil", q:"El caudado y el putamen juntos forman:",
+    options:["El sistema límbico","El cuerpo estriado","La sustancia negra","El tálamo"], correct:1,
+    explain:"Caudado + Putamen = Cuerpo estriado." },
+  { level:"media", q:"¿Cuál es la diferencia principal entre receptores ionotrópicos y metabotrópicos?",
+    options:["Los ionotrópicos son canales iónicos de acción directa; los metabotrópicos usan segundo mensajero (más lentos)",
+      "Los metabotrópicos son canales iónicos directos","No hay diferencia funcional entre ambos",
+      "Los ionotrópicos son más lentos que los metabotrópicos"], correct:0,
+    explain:"Los ionotrópicos abren el canal directamente; los metabotrópicos activan una vía de señalización más lenta." },
+  { level:"media", q:"¿Por qué la acetilcolina puede ser excitatoria en el músculo esquelético e inhibitoria en el corazón?",
+    options:["Porque cambia su estructura química según el órgano","Porque en cada ubicación hay un tipo diferente de receptor",
+      "Porque el corazón no tiene receptores de ACh","Es un error, la ACh siempre es excitatoria"], correct:1,
+    explain:"El efecto depende del receptor presente en la célula postsináptica, no del neurotransmisor en sí." },
+  { level:"media", q:"La deficiencia de GABA se relaciona con síntomas como:",
+    options:["Euforia y motivación excesiva","Ansiedad, pánico, insomnio y dependencia al alcohol",
+      "Aumento de la memoria","Broncodilatación"], correct:1,
+    explain:"Niveles bajos de GABA quitan el 'freno' inhibitorio y generan ansiedad, insomnio, etc." },
+  { level:"media", q:"¿Cuál es la función principal del globo pálido?",
+    options:["Producir dopamina","Regular la temperatura corporal",
+      "Regular los movimientos no conscientes, siendo la principal vía eferente hacia el tálamo",
+      "Secretar acetilcolina en el corazón"], correct:2,
+    explain:"Modula los impulsos del cerebelo mediante GABA y es la vía eferente principal hacia el tálamo." },
+  { level:"media", q:"¿Qué neurotransmisores están disminuidos característicamente en la depresión?",
+    options:["GABA y glutamato","Histamina y acetilcolina","Noradrenalina, serotonina y dopamina","Glicina y ATP"], correct:2,
+    explain:"La depresión se asocia a disminución de noradrenalina, serotonina y dopamina." },
+  { level:"dificil", q:"En el mecanismo del Parkinson, ¿qué ocurre con la acetilcolina cuando la sustancia negra se deteriora?",
+    options:["Disminuye junto con la dopamina","Queda en mayor cantidad de lo normal, produciendo exceso de actividad excitatoria",
+      "Se convierte en dopamina","Deja de secretarse por completo"], correct:1,
+    explain:"Al bajar la dopamina (inhibidora), la acetilcolina (excitatoria) queda en exceso, causando los síntomas." },
+  { level:"dificil", q:"¿Qué vía NO corresponde a las 4 vías dopaminérgicas principales?",
+    options:["Mesocortical","Nigroestriada","Corticoespinal","Mesolímbica"], correct:2,
+    explain:"Las 4 vías son: mesocortical, nigroestriada, tuberoinfundibular y mesolímbica." },
+  { level:"dificil", q:"Según el ejemplo de manejar, ¿qué vías se activan simultáneamente?",
+    options:["Solo la vía directa, que desaconseja ambas acciones",
+      "La vía directa (aconseja A) y la vía indirecta (desaconseja B), simultáneamente",
+      "Solo la vía indirecta, que aconseja la acción A","Ninguna vía se activa hasta después de la decisión"], correct:1,
+    explain:"La sustancia negra transmite la decisión vía tálamo: directa aconseja A, indirecta desaconseja B, a la vez." },
+  { level:"dificil", q:"¿Con qué estructura se conecta el putamen para formar el 'circuito del odio'?",
+    options:["El hipocampo","La ínsula","La amígdala únicamente","El cerebelo"], correct:1,
+    explain:"Las conexiones del putamen con la ínsula se relacionan con asco y desprecio." },
+  { level:"dificil", q:"Los receptores de histamina (H1, H2, H3, H4) comparten el mismo tipo de acoplamiento, ¿cuál es?",
+    options:["Todos son canales iónicos ionotrópicos","Todos son receptores metabotrópicos",
+      "Solo existen H1 y H2","Mitad ionotrópicos, mitad metabotrópicos"], correct:1,
+    explain:"Los 4 receptores de histamina son metabotrópicos (acoplados a proteína G)." },
+];
+
+const LEVEL_META = {
+  facil:   { label:"Fácil",   cls:"lvl-facil"   },
+  media:   { label:"Media",   cls:"lvl-media"   },
+  dificil: { label:"Difícil", cls:"lvl-dificil" },
+};
+
+let step = 0;
+let answers = Array(QUESTIONS.length).fill(null);
+let selected = null;
+let revealed = false;
+
+function startQuiz(){
+  document.getElementById('intro').classList.add('hide');
+  document.getElementById('quiz').classList.remove('hide');
+  step = 0; answers = Array(QUESTIONS.length).fill(null);
+  renderQuestion();
+}
+
+function restartQuiz(){
+  document.getElementById('results').classList.add('hide');
+  document.getElementById('quiz').classList.remove('hide');
+  step = 0; answers = Array(QUESTIONS.length).fill(null);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  selected = null; revealed = false;
+  const total = QUESTIONS.length;
+  const q = QUESTIONS[step];
+  const meta = LEVEL_META[q.level];
+
+  document.getElementById('progressFill').style.width = (step/total*100)+'%';
+  document.getElementById('progressLabel').textContent = (step+1)+' / '+total;
+
+  const tag = document.getElementById('levelTag');
+  tag.textContent = '♡ ' + meta.label;
+  tag.className = 'level-tag ' + meta.cls;
+
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('explainBox').innerHTML = '';
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="opt-letter">'+String.fromCharCode(97+i)+'</span><span>'+opt+'</span>';
+    btn.onclick = () => chooseOption(i);
+    btn.id = 'opt-'+i;
+    optsDiv.appendChild(btn);
+  });
+
+  const mainBtn = document.getElementById('mainBtn');
+  mainBtn.textContent = 'Confirmar';
+  mainBtn.disabled = true;
+}
+
+function chooseOption(i){
+  if(revealed) return;
+  selected = i;
+  document.querySelectorAll('.option').forEach((el, idx) => {
+    el.classList.toggle('selected', idx === i);
+  });
+  document.getElementById('mainBtn').disabled = false;
+}
+
+function handleMainBtn(){
+  if(!revealed){
+    confirmAnswer();
+  } else {
+    goNext();
+  }
+}
+
+function confirmAnswer(){
+  if(selected === null) return;
+  answers[step] = selected;
+  revealed = true;
+  const q = QUESTIONS[step];
+
+  document.querySelectorAll('.option').forEach((el, idx) => {
+    el.onclick = null;
+    if(idx === q.correct){
+      el.classList.add('correct');
+      el.innerHTML += '<span class="opt-icon">✅</span>';
+    } else if(idx === selected){
+      el.classList.add('wrong');
+      el.innerHTML += '<span class="opt-icon">❌</span>';
+    } else {
+      el.classList.add('dim');
+    }
+  });
+
+  document.getElementById('explainBox').innerHTML =
+    '<div class="explain">💡 '+q.explain+'</div>';
+
+  const total = QUESTIONS.length;
+  const mainBtn = document.getElementById('mainBtn');
+  mainBtn.textContent = (step+1 === total) ? 'Ver resultados →' : 'Siguiente →';
+}
+
+function goNext(){
+  step++;
+  if(step >= QUESTIONS.length){
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults(){
+  document.getElementById('quiz').classList.add('hide');
+  document.getElementById('results').classList.remove('hide');
+
+  const total = QUESTIONS.length;
+  const score = answers.filter((a,i) => a === QUESTIONS[i].correct).length;
+  const pct = Math.round(score/total*100);
+
+  let msg = '¡Sigue repasando, tú puedes! 💗';
+  if(pct >= 90) msg = '¡Excelente, dominas el tema! 🌟';
+  else if(pct >= 70) msg = '¡Muy bien! Vas súper bien 🌸';
+  else if(pct >= 50) msg = '¡Vas por buen camino! ✨';
+  document.getElementById('resultMsg').textContent = msg;
+
+  document.getElementById('ringScore').textContent = score+'/'+total;
+  document.getElementById('ringPct').textContent = pct+'%';
+  const circ = 2*Math.PI*52;
+  const ring = document.getElementById('ringProgress');
+  ring.setAttribute('stroke-dasharray', circ);
+  ring.setAttribute('stroke-dashoffset', circ*(1-score/total));
+
+  const levels = ['facil','media','dificil'];
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  levels.forEach(lvl => {
+    const idxs = QUESTIONS.map((q,i)=> q.level===lvl ? i : null).filter(i=>i!==null);
+    const correct = idxs.filter(i => answers[i] === QUESTIONS[i].correct).length;
+    const meta = LEVEL_META[lvl];
+    const box = document.createElement('div');
+    box.className = 'level-box ' + meta.cls;
+    box.innerHTML = '<div class="lname">'+meta.label+'</div><div class="lscore">'+correct+'/'+idxs.length+'</div>';
+    grid.appendChild(box);
+  });
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.correct;
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (ok ? 'ok' : 'bad');
+    div.innerHTML = '<span class="ic">'+(ok?'✅':'❌')+'</span><span><b>'+(i+1)+'.</b> '+q.q+
+      (ok ? '' : ' <span class="ans-correct">(correcta: '+q.options[q.correct]+')</span>') + '</span>';
+    reviewList.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
